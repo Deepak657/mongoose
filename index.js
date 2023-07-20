@@ -142,6 +142,28 @@ db.getCollection("student").aggregate([
   },
 ]);
 
+// $cond
+
+db.getCollection("student").aggregate([
+  {
+    $group: {
+      _id: "$fessPaid",
+      count: { $sum: 1 },
+    },
+  },
+  {
+    $project: {
+      _id: 0,
+      paidStudent: {
+        $cond: [{ $eq: ["$_id", true] }, "$count", 0],
+      },
+      unPaidStudent: {
+        $cond: [{ $eq: ["$_id", false] }, "$count", 0],
+      },
+    },
+  },
+]);
+
 ///// SKIP
 
 // BucketAuto
